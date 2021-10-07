@@ -1,0 +1,23 @@
+.img-box {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.mountain-img {
+  max-width: 100%;
+}
+
+.social-login button svg {
+  display: inline-block;
+  font-size: 36px;
+  text-align: center;
+  padding: 20px 40px;
+  color: #04c35c;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.social-login button svg:hover {
+  border-color: #04c35c;
+}
