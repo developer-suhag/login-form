@@ -11,7 +11,7 @@ import {
 import React from "react";
 import initializeAuthentication from "../../Firebase/firebase.init";
 import "./Login.css";
-import mountain from "../../images/mountain.svg";
+import authentication from "../../images/authentication.svg";
 import { Box } from "@mui/system";
 import PersonIcon from "@mui/icons-material/Person";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
@@ -26,134 +26,140 @@ const Login = () => {
   return (
     <Container
       sx={{
-        my: 8,
+        my: 4,
         bgcolor: "#fff",
         borderRadius: 2,
         boxShadow: 1,
         overflow: "hidden",
+        py: 2,
       }}
     >
       <Grid
-        sx
+        sx={{ alignItems: "center" }}
         container
         spacing={{ xs: 2, md: 4 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         {
           <Grid className="img-box" item xs={2} sm={4} md={6}>
-            <img className="mountain-img" src={mountain} alt="" />
+            <img className="mountain-img" src={authentication} alt="" />
           </Grid>
         }
         {
-          <Grid sx={{ mt: 16 }} item xs={2} sm={4} md={6}>
-            <Typography variant="p" color="#2D3748">
-              Welcome back
-            </Typography>
-            <Typography sx={{ fontWeight: 700 }} variant="h4" color="#1A202C">
-              Login to your account
-            </Typography>
-            <form>
-              <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                <PersonIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-                <TextField
-                  type="text"
-                  required
-                  id="input-with-sx"
-                  label="Name"
-                  variant="standard"
-                />
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                <AlternateEmailIcon
-                  sx={{ color: "action.active", mr: 1, my: 0.5 }}
-                />
-                <TextField
-                  type="email"
-                  required
-                  id="input-with-sx"
-                  label="Email"
-                  variant="standard"
-                />
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                <VpnKeyIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-                <TextField
-                  type="password"
-                  required
-                  id="input-with-sx"
-                  label="Password"
-                  variant="standard"
-                />
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 4,
-                  alignItems: "center",
-                  mt: 2,
-                }}
-              >
-                <Box>
-                  <FormControlLabel
-                    value="already registerd"
-                    control={<Checkbox />}
-                    label="Alreday Registerd?"
-                    labelPlacement="end"
+          <Grid sx={{}} item xs={2} sm={4} md={6}>
+            <Box sx={{ p: 4 }}>
+              <Typography variant="p" color="#2D3748">
+                Welcome back
+              </Typography>
+              <Typography sx={{ fontWeight: 700 }} variant="h4" color="#1A202C">
+                Login to your account
+              </Typography>
+              <form>
+                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
+                  <PersonIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+                  <TextField
+                    type="text"
+                    required
+                    id="input-with-sx"
+                    label="Name"
+                    variant="standard"
+                    color="info"
                   />
                 </Box>
-                <Box>
-                  <Button sx={{ color: "#2D3748" }} variant="text">
-                    Forget Password?
-                  </Button>
+                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
+                  <AlternateEmailIcon
+                    sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                  />
+                  <TextField
+                    type="email"
+                    required
+                    id="input-with-sx"
+                    label="Email"
+                    variant="standard"
+                    color="info"
+                  />
                 </Box>
-              </Box>
-              <Box sx={{ my: 3 }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ bgcolor: "#04C35C" }}
-                >
-                  Register
-                </Button>
-              </Box>
-              <Box sx={{ my: 4 }}>
-                <Box>
-                  <Typography
-                    sx={{
-                      display: "block",
-                      textAlign: "center",
-                      paddingBottom: 1,
-                      borderBottom: "1px solid #ddd",
-                    }}
-                    variant="span"
-                  >
-                    or use one of these options
-                  </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
+                  <VpnKeyIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+                  <TextField
+                    type="password"
+                    required
+                    id="input-with-sx"
+                    label="Password"
+                    variant="standard"
+                    color="info"
+                  />
                 </Box>
                 <Box
-                  className="social-login"
                   sx={{
-                    my: 3,
-                    display: "grid",
-                    gridTemplateColumns: "repeat(4, 1fr)",
-                    gridGap: 8,
+                    display: "flex",
+                    gap: 4,
+                    alignItems: "center",
+                    mt: 2,
                   }}
                 >
-                  <Button>
-                    <GoogleIcon />
-                  </Button>
-                  <Button>
-                    <FacebookIcon />
-                  </Button>
-                  <Button>
-                    <TwitterIcon />
-                  </Button>
-                  <Button>
-                    <GitHubIcon />
+                  <Box>
+                    <FormControlLabel
+                      value="already registerd"
+                      control={<Checkbox />}
+                      label="Alreday Registerd?"
+                      labelPlacement="end"
+                    />
+                  </Box>
+                  <Box>
+                    <Button sx={{ color: "#2D3748" }} variant="text">
+                      Forget Password?
+                    </Button>
+                  </Box>
+                </Box>
+                <Box sx={{ my: 3 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ bgcolor: "#048195" }}
+                  >
+                    Register
                   </Button>
                 </Box>
-              </Box>
-            </form>
+                <Box sx={{ my: 4 }}>
+                  <Box>
+                    <Typography
+                      sx={{
+                        display: "block",
+                        textAlign: "center",
+                        paddingBottom: 1,
+                        borderBottom: "1px solid #ddd",
+                      }}
+                      variant="span"
+                    >
+                      or use one of these options
+                    </Typography>
+                  </Box>
+                  <Box
+                    className="social-login"
+                    sx={{
+                      my: 3,
+                      display: "grid",
+                      gridTemplateColumns: "repeat(4, 1fr)",
+                      gridGap: 8,
+                    }}
+                  >
+                    <Button>
+                      <GoogleIcon />
+                    </Button>
+                    <Button>
+                      <FacebookIcon />
+                    </Button>
+                    <Button>
+                      <TwitterIcon />
+                    </Button>
+                    <Button>
+                      <GitHubIcon />
+                    </Button>
+                  </Box>
+                </Box>
+              </form>
+            </Box>
           </Grid>
         }
       </Grid>

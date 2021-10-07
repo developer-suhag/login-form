@@ -11,7 +11,7 @@
   font-size: 36px;
   text-align: center;
   padding: 20px 40px;
-  color: #04c35c;
+  color: #048195;
   border: 1px solid #ddd;
   border-radius: 10px;
   cursor: pointer;
@@ -19,5 +19,5 @@
 }
 
 .social-login button svg:hover {
-  border-color: #04c35c;
+  border-color: #048195;
 }
