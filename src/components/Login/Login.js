@@ -142,6 +142,9 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setVerification("");
+        setError("");
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -162,6 +165,8 @@ const Login = () => {
         setVerification(
           "Email verification sent. Check your email to confirm. Without verification, you can't log in."
         );
+        setError("");
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -172,6 +177,8 @@ const Login = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
         setSuccess("Password reset link sent, check your email.");
+        setError("");
+        setVerification("");
       })
       .catch((error) => {
         setError(error.message);
