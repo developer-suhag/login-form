@@ -27,8 +27,12 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  GithubAuthProvider,
 } from "firebase/auth";
 
+// initialize authenticatio
 initializeAuthentication();
 const Login = () => {
   // states
@@ -41,8 +45,39 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [verified, setVerified] = useState(false);
 
+  // get auth and providers
   const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
+  // third party sign in
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  const handleFacebookSignIn = () => {};
+
+  const handleTwitterSignIN = () => {};
+
+  const handleGithubSignIn = () => {
+    signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  // event handelars
   const handleName = (e) => {
     setName(e.target.value);
   };
@@ -58,7 +93,7 @@ const Login = () => {
     setSuccess("");
     setVerification("");
   };
-
+  // handle register
   const handleRegister = (e) => {
     e.preventDefault();
     if (password.length < 8) {
@@ -83,7 +118,7 @@ const Login = () => {
     }
     isLogin ? loggedUser(email, password) : registerNewUser(email, password);
   };
-
+  // register new user
   const registerNewUser = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
@@ -101,19 +136,18 @@ const Login = () => {
         setSuccess("");
       });
   };
-
+  // login user
   const loggedUser = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
-        console.log(result.user.emailVerified);
         console.log(user);
       })
       .catch((error) => {
         setError(error.message);
       });
   };
-
+  // update user name
   const updateName = () => {
     updateProfile(auth.currentUser, { displayName: name })
       .then(() => {})
@@ -121,7 +155,7 @@ const Login = () => {
         setError(error.message);
       });
   };
-
+  // email verification
   const handleVerification = () => {
     sendEmailVerification(auth.currentUser)
       .then(() => {
@@ -133,7 +167,7 @@ const Login = () => {
         setError(error.message);
       });
   };
-
+  // password reset
   const handlePasswordReset = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
@@ -287,16 +321,16 @@ const Login = () => {
                       gridGap: 8,
                     }}
                   >
-                    <Button>
+                    <Button onClick={handleGoogleSignIn}>
                       <GoogleIcon />
                     </Button>
-                    <Button>
+                    <Button onClick={handleFacebookSignIn}>
                       <FacebookIcon />
                     </Button>
-                    <Button>
+                    <Button onClick={handleTwitterSignIN}>
                       <TwitterIcon />
                     </Button>
-                    <Button>
+                    <Button onClick={handleGithubSignIn}>
                       <GitHubIcon />
                     </Button>
                   </Box>
