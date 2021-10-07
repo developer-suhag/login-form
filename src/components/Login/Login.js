@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import initializeAuthentication from "../../Firebase/firebase.init";
 import "./Login.css";
 import authentication from "../../images/authentication.svg";
@@ -20,9 +20,130 @@ import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 
 initializeAuthentication();
 const Login = () => {
+  // states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [verification, setVerification] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
+  const [verified, setVerified] = useState(false);
+
+  const auth = getAuth();
+
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+  const toggleLogin = (e) => {
+    setIsLogin(e.target.checked);
+    setError("");
+    setSuccess("");
+    setVerification("");
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (password.length < 8) {
+      setError("Password should have at least 8 characters.");
+      return;
+    }
+    if (!/(?=.*[A-Z].*[A-Z])/.test(password)) {
+      setError("Password should have 2 uppercase.");
+      return;
+    }
+    if (!/(?=.*[!@#$&*])/.test(password)) {
+      setError("Password should have 1 special character.");
+      return;
+    }
+    if (!/(?=.*[0-9].*[0-9])/.test(password)) {
+      setError("Password should have 2 numbers.");
+      return;
+    }
+    if (!/(?=.*[a-z].*[a-z].*[a-z])/.test(password)) {
+      setError("Password should have 3 lowercase.");
+      return;
+    }
+    isLogin ? loggedUser(email, password) : registerNewUser(email, password);
+  };
+
+  const registerNewUser = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const user = result.user;
+        const emailVerified = result.user.emailVerified;
+        updateName();
+        console.log(user);
+        setSuccess("✔️ Registration Successful!");
+        handleVerification();
+        setError("");
+        setVerified(emailVerified);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setSuccess("");
+      });
+  };
+
+  const loggedUser = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(result.user.emailVerified);
+        console.log(user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  const updateName = () => {
+    updateProfile(auth.currentUser, { displayName: name })
+      .then(() => {})
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  const handleVerification = () => {
+    sendEmailVerification(auth.currentUser)
+      .then(() => {
+        setVerification(
+          "Email verification sent. Check your email to confirm. Without verification, you can't log in."
+        );
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  const handlePasswordReset = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setSuccess("Password reset link sent, check your email.");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
   return (
     <Container
       sx={{
@@ -42,35 +163,41 @@ const Login = () => {
       >
         {
           <Grid className="img-box" item xs={2} sm={4} md={6}>
-            <img className="mountain-img" src={authentication} alt="" />
+            <img className="form-img" src={authentication} alt="" />
           </Grid>
         }
         {
           <Grid sx={{}} item xs={2} sm={4} md={6}>
             <Box sx={{ p: 4 }}>
               <Typography variant="p" color="#2D3748">
-                Welcome back
+                {isLogin && "Welcome back"}
               </Typography>
               <Typography sx={{ fontWeight: 700 }} variant="h4" color="#1A202C">
-                Login to your account
+                {isLogin ? "Login to your account" : "Register a new Account"}
               </Typography>
-              <form>
-                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                  <PersonIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-                  <TextField
-                    type="text"
-                    required
-                    id="input-with-sx"
-                    label="Name"
-                    variant="standard"
-                    color="info"
-                  />
-                </Box>
+              <form onSubmit={handleRegister}>
+                {!isLogin && (
+                  <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
+                    <PersonIcon
+                      sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                    />
+                    <TextField
+                      onBlur={handleName}
+                      type="text"
+                      required
+                      id="input-with-sx"
+                      label="Name"
+                      variant="standard"
+                      color="info"
+                    />
+                  </Box>
+                )}
                 <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
                   <AlternateEmailIcon
                     sx={{ color: "action.active", mr: 1, my: 0.5 }}
                   />
                   <TextField
+                    onBlur={handleEmail}
                     type="email"
                     required
                     id="input-with-sx"
@@ -82,6 +209,7 @@ const Login = () => {
                 <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
                   <VpnKeyIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
                   <TextField
+                    onBlur={handlePassword}
                     type="password"
                     required
                     id="input-with-sx"
@@ -100,6 +228,7 @@ const Login = () => {
                 >
                   <Box>
                     <FormControlLabel
+                      onChange={toggleLogin}
                       value="already registerd"
                       control={<Checkbox />}
                       label="Alreday Registerd?"
@@ -107,18 +236,32 @@ const Login = () => {
                     />
                   </Box>
                   <Box>
-                    <Button sx={{ color: "#2D3748" }} variant="text">
+                    <Button
+                      onClick={handlePasswordReset}
+                      sx={{ color: "#2D3748" }}
+                      variant="text"
+                    >
                       Forget Password?
                     </Button>
                   </Box>
+                </Box>
+                <Box>
+                  <Typography variant="p" sx={{ color: "error.main" }}>
+                    {error}
+                  </Typography>
+                  <Typography variant="p" sx={{ color: "success.main" }}>
+                    {success}
+                  </Typography>
+                  <Typography sx={{ my: 2 }}>{verification}</Typography>
                 </Box>
                 <Box sx={{ my: 3 }}>
                   <Button
                     type="submit"
                     variant="contained"
                     sx={{ bgcolor: "#048195" }}
+                    className="regiter-btn"
                   >
-                    Register
+                    {isLogin ? "Login" : "Register"}
                   </Button>
                 </Box>
                 <Box sx={{ my: 4 }}>
