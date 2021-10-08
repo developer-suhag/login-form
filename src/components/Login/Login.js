@@ -1,38 +1,39 @@
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
+import PersonIcon from "@mui/icons-material/Person";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import {
   Button,
   Checkbox,
   Container,
   FormControlLabel,
   Grid,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
+import { Box } from "@mui/system";
+import {
+  createUserWithEmailAndPassword,
+  FacebookAuthProvider,
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  TwitterAuthProvider,
+  updateProfile,
+} from "firebase/auth";
 import React, { useState } from "react";
 import initializeAuthentication from "../../Firebase/firebase.init";
-import "./Login.css";
 import authentication from "../../images/authentication.svg";
-import { Box } from "@mui/system";
-import PersonIcon from "@mui/icons-material/Person";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  GoogleAuthProvider,
-  signInWithPopup,
-  GithubAuthProvider,
-  TwitterAuthProvider,
-  FacebookAuthProvider,
-} from "firebase/auth";
+import LoggedUser from "../LoggedUser/LoggedUser";
+import "./Login.css";
 
 // initialize authenticatio
 initializeAuthentication();
@@ -46,6 +47,8 @@ const Login = () => {
   const [verification, setVerification] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [user, setUser] = useState({});
+  console.log(user);
 
   // get auth and providers
   const auth = getAuth();
@@ -58,10 +61,15 @@ const Login = () => {
   const handleGoogleSignIn = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
-        const user = result.user;
-        console.log(user);
         setError("");
         setSuccess("✔️ Login Successful!");
+        const { displayName, email, photoURL } = result.user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
       })
       .catch((error) => {
         setError(error.message);
@@ -180,6 +188,12 @@ const Login = () => {
         setError(error.message);
       });
   };
+  // handle sign out
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      setUser({});
+    });
+  };
   // update user name
   const updateName = () => {
     updateProfile(auth.currentUser, { displayName: name })
@@ -226,157 +240,174 @@ const Login = () => {
         py: 2,
       }}
     >
-      <Grid
-        sx={{ alignItems: "center" }}
-        container
-        spacing={{ xs: 2, md: 4 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {
-          <Grid className="img-box" item xs={2} sm={4} md={6}>
-            <img className="form-img" src={authentication} alt="" />
-          </Grid>
-        }
-        {
-          <Grid sx={{}} item xs={2} sm={4} md={6}>
-            <Box sx={{ p: 4 }}>
-              <Typography variant="p" color="#2D3748">
-                {isLogin && "Welcome back"}
-              </Typography>
-              <Typography sx={{ fontWeight: 700 }} variant="h4" color="#1A202C">
-                {isLogin ? "Login to your account" : "Register a new Account"}
-              </Typography>
-              <form onSubmit={handleRegister}>
-                {!isLogin && (
+      {user.name ? (
+        <div>
+          <Button onClick={handleSignOut} variant="contained">
+            Log Out
+          </Button>
+        </div>
+      ) : (
+        <Grid
+          sx={{ alignItems: "center" }}
+          container
+          spacing={{ xs: 2, md: 4 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          {
+            <Grid className="img-box" item xs={2} sm={4} md={6}>
+              <img className="form-img" src={authentication} alt="" />
+            </Grid>
+          }
+          {
+            <Grid sx={{}} item xs={2} sm={4} md={6}>
+              <Box sx={{ p: 4 }}>
+                <Typography variant="p" color="#2D3748">
+                  {isLogin && "Welcome back"}
+                </Typography>
+                <Typography
+                  sx={{ fontWeight: 700 }}
+                  variant="h4"
+                  color="#1A202C"
+                >
+                  {isLogin ? "Login to your account" : "Register a new Account"}
+                </Typography>
+                <form onSubmit={handleRegister}>
+                  {!isLogin && (
+                    <Box
+                      sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}
+                    >
+                      <PersonIcon
+                        sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                      />
+                      <TextField
+                        onBlur={handleName}
+                        type="text"
+                        required
+                        id="input-with-sx"
+                        label="Name"
+                        variant="standard"
+                        color="info"
+                      />
+                    </Box>
+                  )}
                   <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                    <PersonIcon
+                    <AlternateEmailIcon
                       sx={{ color: "action.active", mr: 1, my: 0.5 }}
                     />
                     <TextField
-                      onBlur={handleName}
-                      type="text"
+                      onBlur={handleEmail}
+                      type="email"
                       required
                       id="input-with-sx"
-                      label="Name"
+                      label="Email"
                       variant="standard"
                       color="info"
                     />
                   </Box>
-                )}
-                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                  <AlternateEmailIcon
-                    sx={{ color: "action.active", mr: 1, my: 0.5 }}
-                  />
-                  <TextField
-                    onBlur={handleEmail}
-                    type="email"
-                    required
-                    id="input-with-sx"
-                    label="Email"
-                    variant="standard"
-                    color="info"
-                  />
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
-                  <VpnKeyIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-                  <TextField
-                    onBlur={handlePassword}
-                    type="password"
-                    required
-                    id="input-with-sx"
-                    label="Password"
-                    variant="standard"
-                    color="info"
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 4,
-                    alignItems: "center",
-                    mt: 2,
-                  }}
-                >
-                  <Box>
-                    <FormControlLabel
-                      onChange={toggleLogin}
-                      value="already registerd"
-                      control={<Checkbox />}
-                      label="Alreday Registerd?"
-                      labelPlacement="end"
+                  <Box sx={{ display: "flex", alignItems: "flex-end", mt: 2 }}>
+                    <VpnKeyIcon
+                      sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                    />
+                    <TextField
+                      onBlur={handlePassword}
+                      type="password"
+                      required
+                      id="input-with-sx"
+                      label="Password"
+                      variant="standard"
+                      color="info"
                     />
                   </Box>
-                  <Box>
-                    <Button
-                      onClick={handlePasswordReset}
-                      sx={{ color: "#2D3748" }}
-                      variant="text"
-                    >
-                      Forget Password?
-                    </Button>
-                  </Box>
-                </Box>
-                <Box>
-                  <Typography variant="p" sx={{ color: "error.main" }}>
-                    {error}
-                  </Typography>
-                  <Typography variant="p" sx={{ color: "success.main" }}>
-                    {success}
-                  </Typography>
-                  <Typography sx={{ my: 2 }}>{verification}</Typography>
-                </Box>
-                <Box sx={{ my: 3 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ bgcolor: "#048195" }}
-                    className="regiter-btn"
-                  >
-                    {isLogin ? "Login" : "Register"}
-                  </Button>
-                </Box>
-                <Box sx={{ my: 4 }}>
-                  <Box>
-                    <Typography
-                      sx={{
-                        display: "block",
-                        textAlign: "center",
-                        paddingBottom: 1,
-                        borderBottom: "1px solid #ddd",
-                      }}
-                      variant="span"
-                    >
-                      or use one of these options
-                    </Typography>
-                  </Box>
                   <Box
-                    className="social-login"
                     sx={{
-                      my: 3,
-                      display: "grid",
-                      gridTemplateColumns: "repeat(4, 1fr)",
-                      gridGap: 8,
+                      display: "flex",
+                      gap: 4,
+                      alignItems: "center",
+                      mt: 2,
                     }}
                   >
-                    <Button onClick={handleGoogleSignIn}>
-                      <GoogleIcon />
-                    </Button>
-                    <Button onClick={handleFacebookSignIn}>
-                      <FacebookIcon />
-                    </Button>
-                    <Button onClick={handleTwitterSignIN}>
-                      <TwitterIcon />
-                    </Button>
-                    <Button onClick={handleGithubSignIn}>
-                      <GitHubIcon />
+                    <Box>
+                      <FormControlLabel
+                        onChange={toggleLogin}
+                        value="already registerd"
+                        control={<Checkbox />}
+                        label="Alreday Registerd?"
+                        labelPlacement="end"
+                      />
+                    </Box>
+                    <Box>
+                      <Button
+                        onClick={handlePasswordReset}
+                        sx={{ color: "#2D3748" }}
+                        variant="text"
+                      >
+                        Forget Password?
+                      </Button>
+                    </Box>
+                  </Box>
+                  <Box>
+                    <Typography variant="p" sx={{ color: "error.main" }}>
+                      {error}
+                    </Typography>
+                    <Typography variant="p" sx={{ color: "success.main" }}>
+                      {success}
+                    </Typography>
+                    <Typography sx={{ my: 2 }}>{verification}</Typography>
+                  </Box>
+                  <Box sx={{ my: 3 }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{ bgcolor: "#048195" }}
+                      className="regiter-btn"
+                    >
+                      {isLogin ? "Login" : "Register"}
                     </Button>
                   </Box>
-                </Box>
-              </form>
-            </Box>
-          </Grid>
-        }
-      </Grid>
+                  <Box sx={{ my: 4 }}>
+                    <Box>
+                      <Typography
+                        sx={{
+                          display: "block",
+                          textAlign: "center",
+                          paddingBottom: 1,
+                          borderBottom: "1px solid #ddd",
+                        }}
+                        variant="span"
+                      >
+                        or use one of these options
+                      </Typography>
+                    </Box>
+                    <Box
+                      className="social-login"
+                      sx={{
+                        my: 3,
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, 1fr)",
+                        gridGap: 8,
+                      }}
+                    >
+                      <Button onClick={handleGoogleSignIn}>
+                        <GoogleIcon />
+                      </Button>
+                      <Button onClick={handleFacebookSignIn}>
+                        <FacebookIcon />
+                      </Button>
+                      <Button onClick={handleTwitterSignIN}>
+                        <TwitterIcon />
+                      </Button>
+                      <Button onClick={handleGithubSignIn}>
+                        <GitHubIcon />
+                      </Button>
+                    </Box>
+                  </Box>
+                </form>
+              </Box>
+            </Grid>
+          }
+        </Grid>
+      )}
+      {user.name && <LoggedUser user={user}></LoggedUser>}
     </Container>
   );
 };
