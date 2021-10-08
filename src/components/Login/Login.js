@@ -63,6 +63,7 @@ const Login = () => {
       .then((result) => {
         setError("");
         setSuccess("✔️ Login Successful!");
+        console.log(result.user);
         const { displayName, email, photoURL } = result.user;
         const existingUser = {
           name: displayName,
@@ -70,6 +71,7 @@ const Login = () => {
           img: photoURL,
         };
         setUser(existingUser);
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -80,7 +82,7 @@ const Login = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+
         setError("");
         setSuccess("✔️ Login Successful!");
       })
@@ -93,7 +95,7 @@ const Login = () => {
     signInWithPopup(auth, twitterProvider)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+
         setError("");
         setSuccess("✔️ Login Successful!");
       })
@@ -106,7 +108,7 @@ const Login = () => {
     signInWithPopup(auth, githubProvider)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+
         setError("");
         setSuccess("✔️ Login Successful!");
       })
@@ -163,7 +165,7 @@ const Login = () => {
         const user = result.user;
         const emailVerified = result.user.emailVerified;
         updateName();
-        console.log(user);
+
         setSuccess("✔️ Registration Successful!");
         handleVerification();
         setError("");
@@ -179,7 +181,7 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+
         setVerification("");
         setError("");
         setSuccess("");
@@ -241,11 +243,11 @@ const Login = () => {
       }}
     >
       {user.name ? (
-        <div>
+        <Box sx={{ textAlign: "right" }}>
           <Button onClick={handleSignOut} variant="contained">
             Log Out
           </Button>
-        </div>
+        </Box>
       ) : (
         <Grid
           sx={{ alignItems: "center" }}
