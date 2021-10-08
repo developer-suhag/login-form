@@ -25,3 +25,20 @@
 .social-login button svg:hover {
   border-color: #048195;
 }
+
+@media screen and (max-width: 1180px) {
+  .social-login button svg {
+    font-size: 30px;
+    padding: 20px 20px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .social-login {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media screen and (max-width: 330px) {
+  .social-login {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+}
