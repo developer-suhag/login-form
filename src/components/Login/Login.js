@@ -31,6 +31,7 @@ import {
   signInWithPopup,
   GithubAuthProvider,
   TwitterAuthProvider,
+  FacebookAuthProvider,
 } from "firebase/auth";
 
 // initialize authenticatio
@@ -51,6 +52,7 @@ const Login = () => {
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const twitterProvider = new TwitterAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
 
   // third party sign in
   const handleGoogleSignIn = () => {
@@ -58,19 +60,34 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setError("");
+        setSuccess("✔️ Login Successful!");
       })
       .catch((error) => {
         setError(error.message);
       });
   };
 
-  const handleFacebookSignIn = () => {};
+  const handleFacebookSignIn = () => {
+    signInWithPopup(auth, facebookProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        setError("");
+        setSuccess("✔️ Login Successful!");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
 
   const handleTwitterSignIN = () => {
     signInWithPopup(auth, twitterProvider)
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setError("");
+        setSuccess("✔️ Login Successful!");
       })
       .catch((error) => {
         setError(error.message);
@@ -82,6 +99,8 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setError("");
+        setSuccess("✔️ Login Successful!");
       })
       .catch((error) => {
         setError(error.message);
