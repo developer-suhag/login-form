@@ -4,7 +4,6 @@ import React from "react";
 
 const LoggedUser = (props) => {
   const { name, email, img } = props.user;
-  console.log(img);
   return (
     <Container>
       <Box

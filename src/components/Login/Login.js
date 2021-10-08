@@ -28,8 +28,9 @@ import {
   signOut,
   TwitterAuthProvider,
   updateProfile,
+  onAuthStateChanged,
 } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import initializeAuthentication from "../../Firebase/firebase.init";
 import authentication from "../../images/authentication.svg";
 import LoggedUser from "../LoggedUser/LoggedUser";
@@ -48,7 +49,6 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [verified, setVerified] = useState(false);
   const [user, setUser] = useState({});
-  console.log(user);
 
   // get auth and providers
   const auth = getAuth();
@@ -63,14 +63,14 @@ const Login = () => {
       .then((result) => {
         setError("");
         setSuccess("✔️ Login Successful!");
-        const { displayName, email, photoURL } = result.user;
-        const existingUser = {
-          name: displayName,
-          email: email,
-          img: photoURL,
-        };
-        setUser(existingUser);
-        setSuccess("");
+        // const { displayName, email, photoURL } = result.user;
+        // const existingUser = {
+        //   name: displayName,
+        //   email: email,
+        //   img: photoURL,
+        // };
+        // setUser(existingUser);
+        // setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -81,15 +81,15 @@ const Login = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
         setError("");
-        setSuccess("✔️ Login Successful!");
-        const { displayName, email, photoURL } = result.user;
-        const existingUser = {
-          name: displayName,
-          email: email,
-          img: photoURL,
-        };
-        setUser(existingUser);
-        setSuccess("");
+        // setSuccess("✔️ Login Successful!");
+        // const { displayName, email, photoURL } = result.user;
+        // const existingUser = {
+        //   name: displayName,
+        //   email: email,
+        //   img: photoURL,
+        // };
+        // setUser(existingUser);
+        // setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -101,14 +101,14 @@ const Login = () => {
       .then((result) => {
         setError("");
         setSuccess("✔️ Login Successful!");
-        const { displayName, email, photoURL } = result.user;
-        const existingUser = {
-          name: displayName,
-          email: email,
-          img: photoURL,
-        };
-        setUser(existingUser);
-        setSuccess("");
+        // const { displayName, email, photoURL } = result.user;
+        // const existingUser = {
+        //   name: displayName,
+        //   email: email,
+        //   img: photoURL,
+        // };
+        // setUser(existingUser);
+        // setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -120,14 +120,14 @@ const Login = () => {
       .then((result) => {
         setError("");
         setSuccess("✔️ Login Successful!");
-        const { displayName, email, photoURL } = result.user;
-        const existingUser = {
-          name: displayName,
-          email: email,
-          img: photoURL,
-        };
-        setUser(existingUser);
-        setSuccess("");
+        // const { displayName, email, photoURL } = result.user;
+        // const existingUser = {
+        //   name: displayName,
+        //   email: email,
+        //   img: photoURL,
+        // };
+        // setUser(existingUser);
+        // setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -196,13 +196,13 @@ const Login = () => {
   const loggedUser = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        const { displayName, email, photoURL } = result.user;
-        const existingUser = {
-          name: displayName,
-          email: email,
-          img: photoURL,
-        };
-        setUser(existingUser);
+        // const { displayName, email, photoURL } = result.user;
+        // const existingUser = {
+        //   name: displayName,
+        //   email: email,
+        //   img: photoURL,
+        // };
+        // setUser(existingUser);
         setSuccess("");
         setVerification("");
         setError("");
@@ -252,6 +252,22 @@ const Login = () => {
         setError(error.message);
       });
   };
+  // show logged user
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { displayName, email, photoURL } = user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
+        setSuccess("");
+      } else {
+      }
+    });
+  }, [auth]);
 
   return (
     <Container
@@ -266,7 +282,12 @@ const Login = () => {
     >
       {user.name ? (
         <Box sx={{ textAlign: "right" }}>
-          <Button onClick={handleSignOut} variant="contained">
+          <Button
+            className="regiter-btn"
+            sx={{ bgcolor: "#048195" }}
+            onClick={handleSignOut}
+            variant="contained"
+          >
             Log Out
           </Button>
         </Box>
