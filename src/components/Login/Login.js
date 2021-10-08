@@ -63,7 +63,6 @@ const Login = () => {
       .then((result) => {
         setError("");
         setSuccess("✔️ Login Successful!");
-        console.log(result.user);
         const { displayName, email, photoURL } = result.user;
         const existingUser = {
           name: displayName,
@@ -81,10 +80,16 @@ const Login = () => {
   const handleFacebookSignIn = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
-        const user = result.user;
-
         setError("");
         setSuccess("✔️ Login Successful!");
+        const { displayName, email, photoURL } = result.user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -94,10 +99,16 @@ const Login = () => {
   const handleTwitterSignIN = () => {
     signInWithPopup(auth, twitterProvider)
       .then((result) => {
-        const user = result.user;
-
         setError("");
         setSuccess("✔️ Login Successful!");
+        const { displayName, email, photoURL } = result.user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -107,10 +118,16 @@ const Login = () => {
   const handleGithubSignIn = () => {
     signInWithPopup(auth, githubProvider)
       .then((result) => {
-        const user = result.user;
-
         setError("");
         setSuccess("✔️ Login Successful!");
+        const { displayName, email, photoURL } = result.user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
+        setSuccess("");
       })
       .catch((error) => {
         setError(error.message);
@@ -162,7 +179,6 @@ const Login = () => {
   const registerNewUser = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        const user = result.user;
         const emailVerified = result.user.emailVerified;
         updateName();
 
@@ -180,8 +196,14 @@ const Login = () => {
   const loggedUser = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        const user = result.user;
-
+        const { displayName, email, photoURL } = result.user;
+        const existingUser = {
+          name: displayName,
+          email: email,
+          img: photoURL,
+        };
+        setUser(existingUser);
+        setSuccess("");
         setVerification("");
         setError("");
         setSuccess("");
