@@ -30,6 +30,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   GithubAuthProvider,
+  TwitterAuthProvider,
 } from "firebase/auth";
 
 // initialize authenticatio
@@ -49,6 +50,7 @@ const Login = () => {
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
 
   // third party sign in
   const handleGoogleSignIn = () => {
@@ -64,7 +66,16 @@ const Login = () => {
 
   const handleFacebookSignIn = () => {};
 
-  const handleTwitterSignIN = () => {};
+  const handleTwitterSignIN = () => {
+    signInWithPopup(auth, twitterProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
 
   const handleGithubSignIn = () => {
     signInWithPopup(auth, githubProvider)
